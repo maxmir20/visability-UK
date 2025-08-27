@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      max-width: 500px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .header {
+      margin-bottom: 15px;
+    }
+    
+    .header h3 {
+      margin: 0 0 10px 0;
+    }
+    
+    .company-info {
+      margin-bottom: 15px;
+    }
+    
+    .best-match {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    .collapsible {
+      margin-top: 10px;
+    }
+    
+    .collapsible summary {
+      cursor: pointer;
+      font-weight: bold;
+      padding: 5px 0;
+    }
+    
+    .collapsible ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    
+    .collapsible li {
+      margin: 5px 0;
+    }
+    
+    .near-exact {
+      color: #007bff;
+      font-weight: bold;
+    }
+    
+    .close-btn {
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: #0073b1;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .close-btn:hover {
+      background: #005a8b;
+    }
+    
+    .exact-match { color: #28a745; }
+    .near-match { color: #007bff; }
+    .partial-match { color: #ffc107; }
+    .no-match { color: #dc3545; }
+  </style>
+</head>
+<body>
+  <div id="results-content">
+    <div class="header">
+      <h3 id="match-type">Loading...</h3>
+    </div>
+    <div class="company-info">
+      <p><strong>Company:</strong> <span id="current-company">-</span></p>
+      <p class="best-match"><strong id="best-match-label">Match:</strong> <span id="best-match">-</span></p>
+    </div>
+    <div id="matches-list" class="collapsible" style="display: none;">
+      <details>
+        <summary id="matches-summary">Show matches</summary>
+        <ul id="matches-ul"></ul>
+      </details>
+    </div>
+  </div>
+  
+  <button id="close-popup" class="close-btn">Close</button>
+</body>
+</html>

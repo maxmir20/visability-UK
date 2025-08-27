@@ -1,6 +1,6 @@
-# LinkedIn Company Checker - React/TypeScript Version
+# Visa-bility - React/TypeScript Version
 
-A modern Chrome extension built with React and TypeScript that checks LinkedIn company pages against a list of approved companies.
+A modern Chrome extension built with React and TypeScript that checks Job Posting sites against a list of companies with UK Sponsor Licenses.
 
 ## Features
 

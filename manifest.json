@@ -1,0 +1,62 @@
+{
+  "manifest_version": 3,
+  "name": "Visability",
+  "version": "1.0.0",
+  "description": "Checks job posting sites against a list of companies with UK Sponsor Licences",
+  "icons": {
+    "16": "icons/visa_icon16.png",
+    "32": "icons/visa_icon32.png",
+    "48": "icons/visa_icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "action"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://*.indeed.com/*",
+    "https://*.charityjob.co.uk/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["utils.js", "jobSiteHandler.js", "content.js"]
+    },
+    {
+      "matches": ["https://*.indeed.com/*"],
+      "js": ["utils.js", "jobSiteHandler.js", "content.js"]
+    },
+    {
+      "matches": ["https://*.charityjob.co.uk/*"],
+      "js": ["utils.js", "jobSiteHandler.js", "content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Visa-bility",
+    "default_icon": {
+      "16": "icons/visa_icon16.png",
+      "32": "icons/visa_icon32.png",
+      "48": "icons/visa_icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["companies.txt"],
+      "matches": [
+        "https://www.linkedin.com/*",
+        "https://*.indeed.com/*",
+        "https://*.charityjob.co.uk/*"
+      ]
+    }
+  ]
+}

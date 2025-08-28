@@ -1,4 +1,3 @@
-
 // Using globally available functions from utils.js and jobSiteHandler.js
 
 class LinkedInCompanyChecker {

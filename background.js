@@ -1,6 +1,6 @@
-// Background script for LinkedIn Company Checker
+// Background script for Visa-bility 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('LinkedIn Company Checker extension installed');
+  console.log('Visa-bility extension installed');
 });
 
 // Handle extension icon click - always show popup
@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
     // Clear badge if not on a supported job site
-    const supportedSites = ['linkedin.com', 'indeed.com', 'charityjob.co.uk'];
+    const supportedSites = ['linkedin.com', 'charityjob.co.uk'];
     const isSupportedSite = supportedSites.some(site => tab.url.includes(site));
     
     if (!isSupportedSite) {
@@ -48,7 +48,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.action.setBadgeBackgroundColor({ color: '' });
     
     // Check if the active tab is on a supported job site
-    const supportedSites = ['linkedin.com', 'indeed.com', 'charityjob.co.uk'];
+    const supportedSites = ['linkedin.com', 'charityjob.co.uk'];
     const isSupportedSite = tab.url ? supportedSites.some(site => tab.url.includes(site)) : false;
     if (isSupportedSite) {
       // Re-run the check for the current page when switching to a supported job site

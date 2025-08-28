@@ -16,7 +16,6 @@
   ],
   "host_permissions": [
     "https://www.linkedin.com/*",
-    "https://*.indeed.com/*",
     "https://*.charityjob.co.uk/*"
   ],
   "content_security_policy": {
@@ -25,10 +24,6 @@
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/*"],
-      "js": ["utils.js", "jobSiteHandler.js", "content.js"]
-    },
-    {
-      "matches": ["https://*.indeed.com/*"],
       "js": ["utils.js", "jobSiteHandler.js", "content.js"]
     },
     {
@@ -54,7 +49,6 @@
       "resources": ["companies.txt"],
       "matches": [
         "https://www.linkedin.com/*",
-        "https://*.indeed.com/*",
         "https://*.charityjob.co.uk/*"
       ]
     }

@@ -112,4 +112,4 @@ The extension is built using Webpack, which:
 
 ## License
 
-This project is part of the LinkedIn Company Checker extension suite.
+This project is part of the Visa-bility extension suite.

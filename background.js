@@ -1,1 +1,57 @@
-(()=>{"use strict";chrome.runtime.onInstalled.addListener(()=>{console.log("LinkedIn Company Checker extension installed")}),chrome.action.onClicked.addListener(e=>{chrome.action.setPopup({popup:"popup.html"})}),chrome.runtime.onMessage.addListener((e,o,t)=>{"updateBadge"===e.action&&(chrome.action.setBadgeText({text:e.text}),chrome.action.setBadgeBackgroundColor({color:e.color}))}),chrome.tabs.onUpdated.addListener((e,o,t)=>{"complete"===o.status&&t.url&&(t.url.includes("linkedin.com")||(console.log("Tab updated - clearing badge (not LinkedIn):",t.url),chrome.action.setBadgeText({text:""}),chrome.action.setBadgeBackgroundColor({color:""})))}),chrome.tabs.onActivated.addListener(e=>{console.log("Tab activated:",e),chrome.tabs.get(e.tabId,e=>{chrome.runtime.lastError?console.error("Error getting tab:",chrome.runtime.lastError):(console.log("Active tab URL:",e.url),e.url?.includes("linkedin.com")||(console.log("Switching to non-LinkedIn tab - clearing badge"),chrome.action.setBadgeText({text:""}),chrome.action.setBadgeBackgroundColor({color:""})))})})})();
+// Background script for LinkedIn Company Checker
+chrome.runtime.onInstalled.addListener(() => {
+  console.log('LinkedIn Company Checker extension installed');
+});
+
+// Handle extension icon click - always show popup
+chrome.action.onClicked.addListener((tab) => {
+  // Always show the popup window, let the popup handle the logic
+  chrome.action.setPopup({ popup: 'popup.html' });
+});
+
+// Handle badge updates from content script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'updateBadge') {
+    chrome.action.setBadgeText({ text: request.text });
+    chrome.action.setBadgeBackgroundColor({ color: request.color });
+  }
+});
+
+// Monitor tab updates to clear badge when leaving supported job sites
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete' && tab.url) {
+    // Clear badge if not on a supported job site
+    const supportedSites = ['linkedin.com', 'indeed.com', 'charityjob.co.uk'];
+    const isSupportedSite = supportedSites.some(site => tab.url.includes(site));
+    
+    if (!isSupportedSite) {
+      console.log('Tab updated - clearing badge (not a supported job site):', tab.url);
+      chrome.action.setBadgeText({ text: '' });
+      chrome.action.setBadgeBackgroundColor({ color: '' });
+    }
+  }
+});
+
+// Monitor tab activation to clear badge when switching to non-supported job site tabs
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  console.log('Tab activated:', activeInfo);
+  
+  chrome.tabs.get(activeInfo.tabId, (tab) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error getting tab:', chrome.runtime.lastError);
+      return;
+    }
+    
+    console.log('Active tab URL:', tab.url);
+    
+    // Check if the active tab is on a supported job site
+    const supportedSites = ['linkedin.com', 'indeed.com', 'charityjob.co.uk'];
+    const isSupportedSite = tab.url ? supportedSites.some(site => tab.url.includes(site)) : false;
+    
+    if (!isSupportedSite) {
+      console.log('Switching to non-supported job site tab - clearing badge');
+      chrome.action.setBadgeText({ text: '' });
+      chrome.action.setBadgeBackgroundColor({ color: '' });
+    }
+  });
+});

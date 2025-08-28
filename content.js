@@ -1,1 +1,134 @@
-(()=>{"use strict";function t(t){const e=t.match(/\/company\/([^\/\?]+)/);return e?e[1].replace(/-/g," ").replace(/\b\w/g,t=>t.toUpperCase()).trim():null}class e{canHandle(t){return t.includes("linkedin.com")}extractCompanyName(e){if(e.includes("linkedin.com/company/"))return t(e);if(e.startsWith("https://www.linkedin.com/jobs/")){const e=this.findCompanyOnWebPage();if(e)try{return t(new URL(e).toString())}catch(t){return e}}return null}findCompanyOnWebPage(){const t=document.querySelector(".job-view-layout.jobs-details");if(!t)return null;const e=t.querySelector(".job-details-jobs-unified-top-card__company-name");if(e){const t=e.textContent?.trim();return t||null}const n=t.querySelectorAll('a[href*="linkedin.com/company"]');return n.length>0&&n[0].getAttribute("href")||null}}class n{canHandle(t){return t.includes("indeed.com")}extractCompanyName(t){return this.findCompanyOnWebPage()}findCompanyOnWebPage(){return console.log("Indeed page company extraction not yet implemented"),null}}class r{canHandle(t){return t.includes("charityjob.co.uk")}extractCompanyName(e){if(e.includes("charityjob.co.uk/organisation/"))return t(e);if(e.startsWith("charityjob.co.uk/jobs")){const e=this.findCompanyOnWebPage();if(e)try{return t(new URL(e).toString())}catch(t){return e}}return null}findCompanyOnWebPage(){const t=document.querySelector("job-title-wrapper");if(!t)return null;const e=t.querySelectorAll('a[href*="/organisation/"]');if(e.length>0)return e[0].getAttribute("href")||null;const n=t.querySelector("organisation");if(n){const t=n.textContent?.trim();return t||null}return null}}const a=new class{constructor(){this.handlers=[new e,new n,new r]}getHandler(t){return this.handlers.find(e=>e.canHandle(t))||null}extractCompanyName(t){const e=this.getHandler(t);return e?e.extractCompanyName(t):null}findCompanyOnWebPage(t){const e=this.getHandler(t);return e?e.findCompanyOnWebPage():null}};function s(t,e){const n=t.toLowerCase().trim().split(" "),r=e.toLowerCase().trim().split(" ");let a=0,s=0;for(let t=0;t<Math.min(n.length,r.length);t++){if(n[t]!==r[t]){r[t]&&r[t].startsWith(n[t])?a+=5:n[t]&&n[t].startsWith(r[t])&&(a+=3);break}s++,a+=10*(t+1)}return a+=20*s,a-=5*Math.abs(n.length-r.length),a}function o(t,e){const n=t.toLowerCase().trim();let r=[],a=[],o=[];for(const t of e){const e=t.toLowerCase().trim();if(e===n)r.push(t);else if(e.startsWith(n))a.push(t);else{const r=s(n,e);r>0&&o.push({name:t,score:r})}}const i=o.sort((t,e)=>e.score-t.score);return!r.length&&a.length>0&&a.length<=3&&1===[...new Set(a)].length&&(r.push(a[0]),a=[]),{exactMatches:r,nearExactMatches:a,partialMatches:i.map(t=>t.name)}}new class{constructor(){this.companies=[],this.currentCompany=null,this.matchStatus="none",this.isInitialized=!1,this.init()}async init(){this.clearBadge(),await this.loadCompanies(),this.isInitialized=!0,this.checkCurrentPage(),this.setupUrlChangeListener(),this.setupMessageListener()}async loadCompanies(){this.showLoadingBadge(),this.companies=await async function(){try{const t=await fetch(chrome.runtime.getURL("companies.txt"));return(await t.text()).split("\n").filter(t=>""!==t.trim())}catch(t){return console.error("Error loading companies:",t),[]}}()}async checkCurrentPage(){const t=(e=window.location.href,a.extractCompanyName(e));var e;if(!t)return this.currentCompany=null,this.matchStatus="none",void this.clearBadge();this.currentCompany=t;const n=o(t,this.companies);n.exactMatches.length>0?this.matchStatus="exact":n.nearExactMatches.length>0?this.matchStatus="nearExact":n.partialMatches.length>0?this.matchStatus="partial":this.matchStatus="none",this.updateExtensionBadge(this.matchStatus)}clearBadge(){chrome.runtime.sendMessage({action:"updateBadge",color:"",text:""})}updateExtensionBadge(t){const e=this.getBadgeConfig(t);chrome.runtime.sendMessage({action:"updateBadge",color:e.color,text:e.text})}getBadgeConfig(t){switch(t){case"exact":return{color:"#28a745",text:"✓"};case"nearExact":return{color:"#007bff",text:"≈"};case"partial":return{color:"#ffc107",text:"⚠"};case"none":return{color:"#dc3545",text:"✗"}}}showLoadingBadge(){chrome.runtime.sendMessage({action:"updateBadge",color:"#0073b1",text:"⏳"})}setupUrlChangeListener(){let t=location.href;new MutationObserver(()=>{const e=location.href;e!==t&&(t=e,setTimeout(()=>this.checkCurrentPage(),1e3))}).observe(document,{subtree:!0,childList:!0}),window.location.href.startsWith("https://www.linkedin.com/jobs/")&&(setTimeout(()=>this.checkCurrentPage(),3e3),setTimeout(()=>this.checkCurrentPage(),5e3))}setupMessageListener(){chrome.runtime.onMessage.addListener((t,e,n)=>{if("getCurrentResults"===t.action)if(this.currentCompany){const t=o(this.currentCompany,this.companies);n({currentCompany:this.currentCompany,results:t})}else n({currentCompany:null,results:null})})}}})();
+// Using globally available functions from utils.js and jobSiteHandler.js
+
+class LinkedInCompanyChecker {
+  companies = [];
+  currentCompany = null;
+  matchStatus = 'none';
+  isInitialized = false;
+
+  constructor() {
+    this.init();
+  }
+
+  async init(){
+    // Clear badge immediately to avoid showing red during loading
+    this.clearBadge();
+    
+    await this.loadCompanies();
+    this.isInitialized = true;
+    this.checkCurrentPage();
+    this.setupUrlChangeListener();
+    this.setupMessageListener();
+  }
+
+  async loadCompanies(){
+    this.showLoadingBadge();
+    this.companies = await window.loadCompanies();
+  }
+
+  async checkCurrentPage(){
+    // Show loading spinner while checking
+    
+    const url = window.location.href;
+    const companyName = window.jobSiteFactory.extractCompanyName(url);
+
+    if (!companyName) {
+      this.currentCompany = null;
+      this.matchStatus = 'none';
+      // Don't show red badge for no company found, just leave it cleared
+      this.clearBadge();
+      return;
+    }
+
+    this.currentCompany = companyName;
+    const results = window.searchCompany(companyName, this.companies);
+    
+    if (results.exactMatches.length > 0) {
+      this.matchStatus = 'exact';
+    } else if (results.nearExactMatches.length > 0) {
+      this.matchStatus = 'nearExact';
+    } else if (results.partialMatches.length > 0) {
+      this.matchStatus = 'partial';
+    } else {
+      this.matchStatus = 'none';
+    }
+
+    this.updateExtensionBadge(this.matchStatus);
+  }
+
+  clearBadge(){
+    chrome.runtime.sendMessage({
+      action: 'updateBadge',
+      color: '',
+      text: ''
+    });
+  }
+
+  updateExtensionBadge(status) {
+    const badgeConfig = this.getBadgeConfig(status);
+    
+    chrome.runtime.sendMessage({
+      action: 'updateBadge',
+      color: badgeConfig.color,
+      text: badgeConfig.text
+    });
+  }
+
+  getBadgeConfig(status) {
+    switch (status) {
+      case 'exact':
+        return { color: '#28a745', text: '✓' };
+      case 'nearExact':
+        return { color: '#007bff', text: '≈' };
+      case 'partial':
+        return { color: '#ffc107', text: '⚠' };
+      case 'none':
+        return { color: '#dc3545', text: '✗' };
+    }
+  }
+
+  showLoadingBadge() {
+    chrome.runtime.sendMessage({
+      action: 'updateBadge',
+      color: '#0073b1', // LinkedIn blue
+      text: '⏳' // Hourglass emoji for loading
+    });
+  }
+
+  setupUrlChangeListener() {
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      const url = location.href;
+      if (url !== lastUrl) {
+        lastUrl = url;
+        setTimeout(() => this.checkCurrentPage(), 1000);
+      }
+    }).observe(document, { subtree: true, childList: true });
+
+    // Additional monitoring for job pages
+    if (window.location.href.startsWith('https://www.linkedin.com/jobs/')) {
+      setTimeout(() => this.checkCurrentPage(), 3000);
+      setTimeout(() => this.checkCurrentPage(), 5000);
+    }
+  }
+
+  setupMessageListener() {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.action === 'getCurrentResults') {
+        // Send current company and results back to popup
+        if (this.currentCompany) {
+          const results = window.searchCompany(this.currentCompany, this.companies);
+          sendResponse({
+            currentCompany: this.currentCompany,
+            results: results
+          });
+        } else {
+          sendResponse({ currentCompany: null, results: null });
+        }
+      }
+    });
+  }
+}
+
+// Initialize the extension
+new LinkedInCompanyChecker();

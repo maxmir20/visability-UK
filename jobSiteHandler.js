@@ -90,20 +90,6 @@ class LinkedInHandler extends BaseJobSiteHandler {
     }
 }
 
-// Indeed handler
-class IndeedHandler extends BaseJobSiteHandler {
-    constructor() {
-        super('indeed.com', 'cmp', null);
-    }
-
-    findCompanyOnWebPage() {
-        // TODO: Implement Indeed company extraction based on their page structure
-        // This would need to be implemented by analyzing Indeed's job page DOM
-        console.log('Indeed page company extraction not yet implemented');
-        return null;
-    }
-}
-
 // CharityJob handler
 class CharityJobHandler extends BaseJobSiteHandler {
     constructor() {
@@ -146,7 +132,6 @@ class CharityJobHandler extends BaseJobSiteHandler {
 const jobSiteFactory = {
     handlers: [
         new LinkedInHandler(),
-        new IndeedHandler(),
         new CharityJobHandler()
     ],
     

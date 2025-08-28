@@ -1,7 +1,3 @@
-// Background script for Visa-bility 
-chrome.runtime.onInstalled.addListener(() => {
-  console.log('Visa-bility extension installed');
-});
 
 // Handle extension icon click - always show popup
 chrome.action.onClicked.addListener((tab) => {
@@ -25,7 +21,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const isSupportedSite = supportedSites.some(site => tab.url.includes(site));
     
     if (!isSupportedSite) {
-      console.log('Tab updated - clearing badge (not a supported job site):', tab.url);
       chrome.action.setBadgeText({ text: '' });
       chrome.action.setBadgeBackgroundColor({ color: '' });
     }
@@ -34,15 +29,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // Monitor tab activation to clear badge when switching to non-supported job site tabs
 chrome.tabs.onActivated.addListener((activeInfo) => {
-  console.log('Tab activated:', activeInfo);
-  
   chrome.tabs.get(activeInfo.tabId, (tab) => {
     if (chrome.runtime.lastError) {
-      console.error('Error getting tab:', chrome.runtime.lastError);
       return;
     }
-    
-    console.log('Active tab URL:', tab.url);
 
     chrome.action.setBadgeText({ text: '' });
     chrome.action.setBadgeBackgroundColor({ color: '' });
@@ -51,12 +41,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     const supportedSites = ['linkedin.com', 'charityjob.co.uk'];
     const isSupportedSite = tab.url ? supportedSites.some(site => tab.url.includes(site)) : false;
     if (isSupportedSite) {
-      // Re-run the check for the current page when switching to a supported job site
-      chrome.tabs.sendMessage(activeInfo.tabId, { action: 'getCurrentResults' }, (response) => {
-        if (chrome.runtime.lastError) {
-          console.log('Could not send message to content script:', chrome.runtime.lastError.message);
-        }
-      });
+      chrome.tabs.sendMessage(activeInfo.tabId, { action: 'getCurrentResults' });
     } 
   });
 });

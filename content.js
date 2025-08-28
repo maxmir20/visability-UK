@@ -1,6 +1,6 @@
 // Using globally available functions from utils.js and jobSiteHandler.js
 
-class LinkedInCompanyChecker {
+class CompanyChecker {
   companies = [];
   currentCompany = null;
   matchStatus = 'none';
@@ -28,7 +28,8 @@ class LinkedInCompanyChecker {
 
   async checkCurrentPage(){
     // Show loading spinner while checking
-    
+    this.showLoadingBadge();
+
     const url = window.location.href;
     const companyName = window.jobSiteFactory.extractCompanyName(url);
 
@@ -97,6 +98,8 @@ class LinkedInCompanyChecker {
 
   setupUrlChangeListener() {
     let lastUrl = location.href;
+    
+    // Existing MutationObserver for DOM changes
     new MutationObserver(() => {
       const url = location.href;
       if (url !== lastUrl) {
@@ -105,8 +108,26 @@ class LinkedInCompanyChecker {
       }
     }).observe(document, { subtree: true, childList: true });
 
+    // Add popstate listener for browser navigation (back/forward buttons)
+    window.addEventListener('popstate', () => {
+      setTimeout(() => this.checkCurrentPage(), 1000);
+    });
+
+    // Add interval check for query parameter changes (fallback)
+    setInterval(() => {
+      const currentUrl = location.href;
+      if (currentUrl !== lastUrl) {
+        lastUrl = currentUrl;
+        this.checkCurrentPage();
+      }
+    }, 2000);
+
     // Additional monitoring for job pages
-    if (window.location.href.startsWith('https://www.linkedin.com/jobs/')) {
+    if (
+      window.location.href.startsWith('https://www.linkedin.com/jobs/') || 
+      window.location.href.includes('indeed.com/') || 
+      window.location.href.startsWith('https://www.charityjob.co.uk/')
+    ) {
       setTimeout(() => this.checkCurrentPage(), 3000);
       setTimeout(() => this.checkCurrentPage(), 5000);
     }
@@ -115,6 +136,9 @@ class LinkedInCompanyChecker {
   setupMessageListener() {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.action === 'getCurrentResults') {
+        // Rerun check to ensure fresh results
+        this.checkCurrentPage();
+        
         // Send current company and results back to popup
         if (this.currentCompany) {
           const results = window.searchCompany(this.currentCompany, this.companies);
@@ -131,4 +155,4 @@ class LinkedInCompanyChecker {
 }
 
 // Initialize the extension
-new LinkedInCompanyChecker();
+new CompanyChecker();

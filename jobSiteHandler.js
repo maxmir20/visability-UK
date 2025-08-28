@@ -1,6 +1,7 @@
 // Format company name from LinkedIn URL
-function formatCompanyName(url) {
-    const match = url.match(/\/company\/([^\/\?]+)/);
+function formatCompanyName(url, companyPath = 'company') {
+    const regex = new RegExp('/' + companyPath + '/([^/\\?]+)');
+    const match = url.match(regex);
     if (match) {
         const formatted = match[1]
             .replace(/-/g, ' ')
@@ -13,13 +14,14 @@ function formatCompanyName(url) {
 
 // LinkedIn handler
 class LinkedInHandler {
-    canHandle(url) {
+  companyPath = 'company';
+  canHandle(url) {
         return url.includes('linkedin.com');
     }
 
     extractCompanyName(url) {
         if (url.includes('linkedin.com/company/')) {
-            return formatCompanyName(url);
+            return formatCompanyName(url, this.companyPath);
         }
         else if (url.startsWith('https://www.linkedin.com/jobs/')) {
             const companyInfo = this.findCompanyOnWebPage();
@@ -58,68 +60,97 @@ class LinkedInHandler {
 
 // Indeed handler
 class IndeedHandler {
-    canHandle(url) {
-        return url.includes('indeed.com');
-    }
+  companyPath = 'cmp';
+  canHandle(url) {
+      return url.includes('indeed.com');
+  }
 
-    extractCompanyName(url) {
-        // For Indeed, we'll primarily rely on page content since URLs don't contain company info
-        return this.findCompanyOnWebPage();
-    }
+  extractCompanyName(url) {
+      // For Indeed, we'll primarily rely on page content since URLs don't contain company info
+      return this.findCompanyOnWebPage();
+  }
 
-    findCompanyOnWebPage() {
-        // TODO: Implement Indeed company extraction based on their page structure
-        // This would need to be implemented by analyzing Indeed's job page DOM
-        console.log('Indeed page company extraction not yet implemented');
-        return null;
-    }
+  findCompanyOnWebPage() {
+      // TODO: Implement Indeed company extraction based on their page structure
+      // This would need to be implemented by analyzing Indeed's job page DOM
+      console.log('Indeed page company extraction not yet implemented');
+      return null;
+  }
 }
 
 // CharityJob handler
 class CharityJobHandler {
-    canHandle(url) {
-        return url.includes('charityjob.co.uk');
-    }
+  companyPath = 'organisation';
+  canHandle(url) {
+      return url.includes('charityjob.co.uk');
+  }
 
-    extractCompanyName(url) {
-        if (url.includes('charityjob.co.uk/organisation/')) {
-            return formatCompanyName(url);
-        }
-        else if (url.includes('charityjob.co.uk/jobs')) {
-            const companyInfo = this.findCompanyOnWebPage();
-            if (companyInfo) {
-                try {
-                    let companyUrl = new URL(companyInfo).toString();
-                    return formatCompanyName(companyUrl);
-                }
-                catch (error) {
-                    return companyInfo;
-                }
-            }
-        }
-        return null;
-    }
+  extractCompanyName(url) {
+      if (url.includes('charityjob.co.uk/organisation/')) {
+          return formatCompanyName(url);
+      }
+      else if (url.includes('charityjob.co.uk/jobs')) {
+          const companyInfo = this.findCompanyOnWebPage();
+          if (companyInfo) {
+              try {
+                  let companyUrl = new URL(companyInfo).toString();
+                  return formatCompanyName(companyUrl);
+              }
+              catch (error) {
+                  return companyInfo;
+              }
+          }
+      }
+      return null;
+  }
+  
+  findCompanyOnWebPage() {
+    // When we are on the list of jobs, we need to find the active job article
+      
     
-    findCompanyOnWebPage() {
-        const jobDetailsDiv = document.querySelector('.job-title-wrapper');
-        if (!jobDetailsDiv) {
-            return null;
-        }
-        // First, try to find the company name by the organisation link with class "text-link"
-        const companyLinks = jobDetailsDiv.querySelectorAll('a.text-link[href*="/organisation/"]');
-        if (companyLinks.length > 0) {
-            const companyName = companyLinks[0].textContent?.trim();
-            return companyName || null;
-        }
-        
-        // Fallback: Look for div with class "organisation"
-        const companyNameDiv = jobDetailsDiv.querySelector('.organisation');
-        if (companyNameDiv) {
-            const companyName = companyNameDiv.textContent?.trim();
-            return companyName || null;
-        }
+      const jobDetailsDiv = document.querySelector('.job-details-wrapper.scroll-wrapper') || document.querySelector('.container.job-details-wrapper.single-job-add');
+      if (!jobDetailsDiv) {
+        console.log('No active job details found');
         return null;
-    }
+      }
+
+    
+      // Find the active job article (has job-id but not display-none class)
+      const activeJobArticle = jobDetailsDiv.querySelector('article[job-id]:not(.display-none)');
+      if (!activeJobArticle) {
+        console.log('No active job article found');
+        return null;
+      }
+
+      console.log(activeJobArticle);
+      
+      // Look for job-title-wrapper within the active job article
+      const jobTitleDiv = activeJobArticle.querySelector('.job-details-summary .job-summary .job-title-wrapper');
+      if (!jobTitleDiv) {
+        console.log('No job details found');
+          return null;
+      }
+
+      console.log(jobTitleDiv);
+
+      
+      // First, try to find the company name by the organisation link with class "text-link"
+      const companyLinks = jobTitleDiv.querySelectorAll('a.text-link[href*="/organisation/"]');
+      if (companyLinks.length > 0) {
+          const companyName = companyLinks[0].textContent?.trim();
+          return companyName || null;
+      }
+      
+      // Fallback: Look for div with class "organisation"
+      const companyNameDiv = jobTitleDiv.querySelector('.organisation');
+      if (companyNameDiv) {
+          const companyName = companyNameDiv.textContent?.trim();
+          return companyName || null;
+      }
+
+      console.log('Cant find company');
+      return null;
+  }
 }
 
 // Job site factory

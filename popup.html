@@ -24,21 +24,16 @@
     .header {
       background: #0073b1;
       color: white;
-      padding: 20px;
+      padding: 10px;
       text-align: center;
     }
 
-    .icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 10px;
-      background: #0073b1;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
+    .logo {
+      width: 180px;
+      height: 90px;
+      margin: 0 auto 5px;
+      display: block;
+      object-fit: contain;
     }
 
     .header h1 {
@@ -192,8 +187,7 @@
 <body>
   <div class="popup">
     <div class="header">
-      <div class="icon">🔍</div>
-      <h1>Visa-bility</h1>
+      <img src="images/visa_logo.png" alt="Visa Logo" class="logo">
     </div>
     <div class="content" id="content">
       <div class="loading">Loading...</div>

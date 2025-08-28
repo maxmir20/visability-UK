@@ -1,115 +1,97 @@
-# Visa-bility - React/TypeScript Version
+# Visa-bility - Chrome Extension
 
-A modern Chrome extension built with React and TypeScript that checks Job Posting sites against a list of companies with UK Sponsor Licenses.
+A Chrome extension that checks job posting sites against a list of companies with UK Sponsor Licenses. The extension works on LinkedIn and CharityJob to help users identify companies that can sponsor UK work visas.
 
 ## Features
 
-- **Modern Architecture**: Built with React 18, TypeScript, and Webpack
-- **Type Safety**: Full TypeScript support with strict type checking
-- **Component-Based**: Modular React components for maintainability
-- **Enhanced Matching**: Intelligent fuzzy search with weighted scoring
+- **Multi-Site Support**: Works on LinkedIn and CharityJob job pages
+- **Real-Time Checking**: Instantly checks company names against UK sponsor license database
+- **Smart Matching**: Uses fuzzy matching to find exact, near-exact, and partial matches
 - **Visual Indicators**: Extension badge changes color based on match status
-- **Interactive Popup**: Modern React-based results display
+- **Interactive Popup**: Clean, modern results display with collapsible match details
+- **Large Dataset**: Checks against 136,000+ UK companies with sponsor licenses
 
-## Tech Stack
+## Supported Sites
 
-- **React 18** - UI framework with hooks
-- **TypeScript** - Type-safe JavaScript
-- **Webpack 5** - Module bundler
-- **Chrome Extension APIs** - Browser extension functionality
+- **LinkedIn**: Company pages and job postings
+- **CharityJob**: Organization pages and job listings
 
-## Development
+## How It Works
 
-### Prerequisites
+1. **Install the extension** from the Chrome Web Store
+2. **Navigate to a job site** (LinkedIn, CharityJob)
+3. **View company information** on company pages or job postings
+4. **Click the extension icon** to see if the company has a UK sponsor license
+5. **Review results** showing exact, near-exact, or partial matches
 
-- Node.js 16+
-- npm or yarn
+## Match Types
 
-### Setup
+- **✓ Exact Match**: Company name exactly matches a sponsor license holder
+- **≈ Near Match**: Company name is very similar to a sponsor license holder
+- **⚠ Partial Match**: Company name partially matches sponsor license holders
+- **❌ No Match**: No sponsor license found for this company
 
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+## Installation
 
-2. **Development mode** (with hot reload):
-   ```bash
-   npm run dev
-   ```
+### From Chrome Web Store (Recommended)
+1. Visit the Chrome Web Store
+2. Search for "Visa-bility"
+3. Click "Add to Chrome"
+4. Confirm installation
 
-3. **Build for production**:
-   ```bash
-   npm run build
-   ```
-
-4. **Type checking**:
-   ```bash
-   npm run type-check
-   ```
-
-### Loading the Extension
-
-1. Open Chrome and go to `chrome://extensions/`
-2. Enable "Developer mode"
-3. Click "Load unpacked"
-4. Select the `dist` folder (after building)
+### Manual Installation (Development)
+1. Download or clone this repository
+2. Open Chrome and go to `chrome://extensions/`
+3. Enable "Developer mode"
+4. Click "Load unpacked"
+5. Select the extension folder
 
 ## Project Structure
 
 ```
-src/
-├── components/
-│   ├── ResultsPopup.tsx    # Results display component
-│   └── ResultsPopup.css    # Component styles
-├── types.ts                # TypeScript type definitions
-├── utils.ts                # Utility functions
-├── content.tsx             # Main content script
-├── background.ts           # Background service worker
-├── popup.tsx               # Extension popup component
-├── popup.html              # Popup HTML template
-└── popup.css               # Popup styles
+├── manifest.json           # Extension configuration
+├── popup.html              # Extension popup interface
+├── popup.js                # Popup functionality
+├── content.js              # Content script for job sites
+├── background.js           # Background service worker
+├── jobSiteHandler.js       # Job site-specific handlers
+├── utils.js                # Utility functions
+├── companies.txt           # UK sponsor license database
+├── icons/                  # Extension icons
+│   ├── visa_icon16.png
+│   ├── visa_icon32.png
+│   ├── visa_icon48.png
+│   └── icon128.png
+└── README.md               # This file
 ```
 
-## Key Improvements Over Vanilla JS Version
+## Technical Details
 
-### 1. **Type Safety**
-- Full TypeScript support
-- Compile-time error checking
-- Better IDE support and autocomplete
+### Architecture
+- **Manifest V3**: Uses the latest Chrome extension manifest
+- **Content Scripts**: Inject into job sites to extract company information
+- **Background Service Worker**: Handles badge updates and tab monitoring
+- **Popup Interface**: Modern, responsive design with clear match indicators
 
-### 2. **Component Architecture**
-- Reusable React components
-- Clean separation of concerns
-- Easier testing and maintenance
+### Data Source
+The extension uses a comprehensive database of UK companies with sponsor licenses, containing over 136,000 entries. This data is regularly updated to ensure accuracy.
 
-### 3. **Modern Development Experience**
-- Hot reloading during development
-- Webpack bundling and optimization
-- Better debugging tools
-
-### 4. **Enhanced Maintainability**
-- Modular code structure
-- Clear interfaces and types
-- Consistent coding patterns
-
-## Building and Deployment
-
-The extension is built using Webpack, which:
-- Bundles all TypeScript/React code
-- Optimizes for production
-- Generates the `dist` folder with all necessary files
-
-## Comparison with Vanilla JS Version
-
-| Feature | Vanilla JS | React/TypeScript |
-|---------|------------|------------------|
-| Type Safety | ❌ | ✅ |
-| Component Reusability | ❌ | ✅ |
-| Development Experience | Basic | Modern |
-| Bundle Size | Smaller | Larger (but optimized) |
-| Maintainability | Moderate | High |
-| Testing | Difficult | Easy |
+### Privacy
+- **No Data Collection**: The extension does not collect or transmit any user data
+- **Local Processing**: All company matching happens locally in your browser
+- **No Tracking**: No analytics, tracking, or personal information is gathered
 
 ## License
 
-This project is part of the LinkedIn Company Checker extension suite.
+This project is part of the Visa-bility extension suite.
+
+## Support
+
+For issues, questions, or feature requests, please use the GitHub issues page or contact the development team.
+
+## Version History
+
+- **v1.0.0**: Initial release with LinkedIn and CharityJob support
+- Basic company matching functionality
+- Modern popup interface
+- Real-time badge updates

@@ -125,7 +125,6 @@ class CompanyChecker {
     // Additional monitoring for job pages
     if (
       window.location.href.startsWith('https://www.linkedin.com/jobs/') || 
-      window.location.href.includes('indeed.com/') || 
       window.location.href.startsWith('https://www.charityjob.co.uk/')
     ) {
       setTimeout(() => this.checkCurrentPage(), 3000);

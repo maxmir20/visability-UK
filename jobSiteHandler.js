@@ -12,23 +12,32 @@ function formatCompanyName(url, companyPath = 'company') {
     return null;
 }
 
-// LinkedIn handler
-class LinkedInHandler {
-  companyPath = 'company';
-  canHandle(url) {
-        return url.includes('linkedin.com');
+// Base handler class
+class BaseJobSiteHandler {
+    constructor(url, companyPath = 'company', jobsPath = null) {
+        this.url = url;
+        this.companyPath = companyPath;
+        this.jobsPath = jobsPath;
+        this.companyUrl = url + '/' + companyPath + '/';
+        this.jobsUrl = jobsPath ? url + '/' + jobsPath : null;
+    }
+
+    canHandle(url) {
+        return url.includes(this.url);
     }
 
     extractCompanyName(url) {
-        if (url.includes('linkedin.com/company/')) {
+        // If URL contains company path, extract directly from URL
+        if (this.companyUrl && url.includes(this.companyUrl)) {
             return formatCompanyName(url, this.companyPath);
         }
-        else if (url.startsWith('https://www.linkedin.com/jobs/')) {
+        // If URL contains jobs path, extract from page content
+        else if (this.jobsUrl && url.includes(this.jobsUrl)) {
             const companyInfo = this.findCompanyOnWebPage();
             if (companyInfo) {
                 try {
                     let companyUrl = new URL(companyInfo).toString();
-                    return formatCompanyName(companyUrl);
+                    return formatCompanyName(companyUrl, this.companyPath);
                 }
                 catch (error) {
                     return companyInfo;
@@ -36,6 +45,29 @@ class LinkedInHandler {
             }
         }
         return null;
+    }
+
+    findCompanyOnWebPage() {
+        throw new Error('findCompanyOnWebPage method must be implemented by subclass');
+    }
+
+    // Helper method for extracting text content from DOM elements
+    extractTextContent(selector, parent = document) {
+        const element = parent.querySelector(selector);
+        return element?.textContent?.trim() || null;
+    }
+
+    // Helper method for extracting href from DOM elements
+    extractHref(selector, parent = document) {
+        const element = parent.querySelector(selector);
+        return element?.getAttribute('href') || null;
+    }
+}
+
+// LinkedIn handler
+class LinkedInHandler extends BaseJobSiteHandler {
+    constructor() {
+        super('linkedin.com', 'company', 'jobs');
     }
 
     findCompanyOnWebPage() {
@@ -58,106 +90,48 @@ class LinkedInHandler {
     }
 }
 
-// Indeed handler
-class IndeedHandler {
-  companyPath = 'cmp';
-  canHandle(url) {
-      return url.includes('indeed.com');
-  }
-
-  extractCompanyName(url) {
-      // For Indeed, we'll primarily rely on page content since URLs don't contain company info
-      return this.findCompanyOnWebPage();
-  }
-
-  findCompanyOnWebPage() {
-      // TODO: Implement Indeed company extraction based on their page structure
-      // This would need to be implemented by analyzing Indeed's job page DOM
-      console.log('Indeed page company extraction not yet implemented');
-      return null;
-  }
-}
-
 // CharityJob handler
-class CharityJobHandler {
-  companyPath = 'organisation';
-  canHandle(url) {
-      return url.includes('charityjob.co.uk');
-  }
+class CharityJobHandler extends BaseJobSiteHandler {
+    constructor() {
+        super('charityjob.co.uk', 'organisation', 'jobs');
+    }
 
-  extractCompanyName(url) {
-      if (url.includes('charityjob.co.uk/organisation/')) {
-          return formatCompanyName(url);
-      }
-      else if (url.includes('charityjob.co.uk/jobs')) {
-          const companyInfo = this.findCompanyOnWebPage();
-          if (companyInfo) {
-              try {
-                  let companyUrl = new URL(companyInfo).toString();
-                  return formatCompanyName(companyUrl);
-              }
-              catch (error) {
-                  return companyInfo;
-              }
-          }
-      }
-      return null;
-  }
-  
-  findCompanyOnWebPage() {
-    // When we are on the list of jobs, we need to find the active job article
-      
-    
-      const jobDetailsDiv = document.querySelector('.job-details-wrapper.scroll-wrapper') || document.querySelector('.container.job-details-wrapper.single-job-add');
-      if (!jobDetailsDiv) {
-        console.log('No active job details found');
-        return null;
-      }
+    findCompanyOnWebPage() {
+        const jobDetailsDiv = document.querySelector('.job-details-wrapper.scroll-wrapper') || 
+                             document.querySelector('.container.job-details-wrapper.single-job-add');
+        if (!jobDetailsDiv) {
+            return null;
+        }
 
-    
-      // Find the active job article (has job-id but not display-none class)
-      const activeJobArticle = jobDetailsDiv.querySelector('article[job-id]:not(.display-none)');
-      if (!activeJobArticle) {
-        console.log('No active job article found');
-        return null;
-      }
-
-      console.log(activeJobArticle);
-      
-      // Look for job-title-wrapper within the active job article
-      const jobTitleDiv = activeJobArticle.querySelector('.job-details-summary .job-summary .job-title-wrapper');
-      if (!jobTitleDiv) {
-        console.log('No job details found');
-          return null;
-      }
-
-      console.log(jobTitleDiv);
-
-      
-      // First, try to find the company name by the organisation link with class "text-link"
-      const companyLinks = jobTitleDiv.querySelectorAll('a.text-link[href*="/organisation/"]');
-      if (companyLinks.length > 0) {
-          const companyName = companyLinks[0].textContent?.trim();
-          return companyName || null;
-      }
-      
-      // Fallback: Look for div with class "organisation"
-      const companyNameDiv = jobTitleDiv.querySelector('.organisation');
-      if (companyNameDiv) {
-          const companyName = companyNameDiv.textContent?.trim();
-          return companyName || null;
-      }
-
-      console.log('Cant find company');
-      return null;
-  }
+        // Find the active job article (has job-id but not display-none class)
+        const activeJobArticle = jobDetailsDiv.querySelector('article[job-id]:not(.display-none)');
+        if (!activeJobArticle) {
+            return null;
+        }
+        
+        // Look for job-title-wrapper within the active job article
+        const jobTitleDiv = activeJobArticle.querySelector('.job-details-summary .job-summary .job-title-wrapper');
+        if (!jobTitleDiv) {
+            return null;
+        }
+        
+        // First, try to find the company name by the organisation link with class "text-link"
+        const companyLinks = jobTitleDiv.querySelectorAll('a.text-link[href*="/organisation/"]');
+        if (companyLinks.length > 0) {
+            const companyName = companyLinks[0].textContent?.trim();
+            return companyName || null;
+        }
+        
+        // Fallback: Look for div with class "organisation"
+        const companyName = this.extractTextContent('.organisation', jobTitleDiv);
+        return companyName;
+    }
 }
 
 // Job site factory
 const jobSiteFactory = {
     handlers: [
         new LinkedInHandler(),
-        new IndeedHandler(),
         new CharityJobHandler()
     ],
     

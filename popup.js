@@ -17,11 +17,11 @@ class PopupManager {
       const activeTab = tabs[0];
 
       // Check if the active tab is on a supported job site
-      const supportedSites = ['linkedin.com', 'indeed.com', 'charityjob.co.uk'];
+      const supportedSites = ['linkedin.com', 'charityjob.co.uk'];
       const isSupportedSite = activeTab.url ? supportedSites.some(site => activeTab.url.includes(site)) : false;
       
       if (!activeTab.url || !isSupportedSite) {
-        this.showError('This extension only works on LinkedIn, Indeed, and CharityJob pages.');
+        this.showError('This extension only works on LinkedIn, and CharityJob pages.');
         return;
       }
 
@@ -36,7 +36,7 @@ class PopupManager {
         if (response && response.currentCompany) {
           this.showResults(response.currentCompany, response.results);
         } else {
-          this.showMessage('No company found on this page. Navigate to a company or job page with one of our supported sites: LinkedIn, Indeed, or CharityJob.');
+          this.showMessage('No company found on this page. Navigate to a company or job page with one of our supported sites: LinkedIn, or CharityJob.');
         }
       } catch (error) {
         this.showError('Unable to get company data. Please refresh the page and try again.');

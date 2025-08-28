@@ -1,4 +1,7 @@
-# Visa-bility - Chrome Extension
+
+<img width="128" height="128" alt="visa_logo" src="https://github.com/user-attachments/assets/be323ec4-b5dc-4dbe-966d-b5d79965de9a" />
+
+––––––––––––––––––––––––––––––––––––––––––––––––
 
 A Chrome extension that checks job posting sites against a list of companies with UK Sponsor Licenses. The extension works on LinkedIn and CharityJob to help users identify companies that can sponsor UK work visas.
 

@@ -36,7 +36,7 @@ class PopupManager {
         if (response && response.currentCompany) {
           this.showResults(response.currentCompany, response.results);
         } else {
-          this.showMessage('No company found on this page. Navigate to a LinkedIn company or job page.');
+          this.showMessage('No company found on this page. Navigate to a company or job page with one of our supported sites: LinkedIn, Indeed, or CharityJob.');
         }
       } catch (error) {
         this.showError('Unable to get company data. Please refresh the page and try again.');

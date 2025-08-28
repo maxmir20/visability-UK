@@ -43,15 +43,20 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     }
     
     console.log('Active tab URL:', tab.url);
+
+    chrome.action.setBadgeText({ text: '' });
+    chrome.action.setBadgeBackgroundColor({ color: '' });
     
     // Check if the active tab is on a supported job site
     const supportedSites = ['linkedin.com', 'indeed.com', 'charityjob.co.uk'];
     const isSupportedSite = tab.url ? supportedSites.some(site => tab.url.includes(site)) : false;
-    
-    if (!isSupportedSite) {
-      console.log('Switching to non-supported job site tab - clearing badge');
-      chrome.action.setBadgeText({ text: '' });
-      chrome.action.setBadgeBackgroundColor({ color: '' });
-    }
+    if (isSupportedSite) {
+      // Re-run the check for the current page when switching to a supported job site
+      chrome.tabs.sendMessage(activeInfo.tabId, { action: 'getCurrentResults' }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.log('Could not send message to content script:', chrome.runtime.lastError.message);
+        }
+      });
+    } 
   });
 });

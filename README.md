@@ -3,9 +3,21 @@
 
 ––––––––––––––––––––––––––––––––––––––––––––––––
 
+
 A Chrome extension that checks job posting sites against a list of companies with UK Sponsor Licenses. The extension works on LinkedIn and CharityJob to help users identify companies that can sponsor UK work visas.
+<kbd>
+  <img width="250" height="250" src="https://github.com/user-attachments/assets/edd60788-2887-4768-8630-afced4ce8c54"/>
+</kbd>
+<kbd>
+<img width="250" height="250" src="https://github.com/user-attachments/assets/84565edd-6de1-46fb-9d1b-75cca4dbc1c6"/>
+</kbd>
+<kbd>
+<img width="250" height="250" src="https://github.com/user-attachments/assets/30384f38-a441-4ff1-a33d-0331fac682fe"/>
+</kbd>
+
 
 ## Features
+
 
 - **Multi-Site Support**: Works on LinkedIn and CharityJob job pages
 - **Real-Time Checking**: Instantly checks company names against UK sponsor license database
@@ -70,23 +82,13 @@ A Chrome extension that checks job posting sites against a list of companies wit
 
 ## Technical Details
 
-### Architecture
-- **Manifest V3**: Uses the latest Chrome extension manifest
-- **Content Scripts**: Inject into job sites to extract company information
-- **Background Service Worker**: Handles badge updates and tab monitoring
-- **Popup Interface**: Modern, responsive design with clear match indicators
-
 ### Data Source
-The extension uses a comprehensive database of UK companies with sponsor licenses, containing over 136,000 entries. This data is regularly updated to ensure accuracy.
+This exists used the [Register of licensed sponsors](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers) list of UK companies posted the the UK Visa and Immigration Office (data current as of August 29th 2525)
 
 ### Privacy
 - **No Data Collection**: The extension does not collect or transmit any user data
 - **Local Processing**: All company matching happens locally in your browser
 - **No Tracking**: No analytics, tracking, or personal information is gathered
-
-## License
-
-This project is part of the Visa-bility extension suite.
 
 ## Support
 

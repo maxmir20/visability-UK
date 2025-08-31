@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visa-bility </title>
+  <style>
+    body {
+      width: 350px;
+      min-height: 300px;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+    }
+
+    .popup {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #0073b1;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 180px;
+      height: 90px;
+      margin: 0 auto 5px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 20px;
+      min-height: 200px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #0073b1;
+      font-weight: bold;
+      padding: 20px 0;
+    }
+
+    .error {
+      text-align: center;
+      color: #dc3545;
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .message {
+      text-align: center;
+      color: #666;
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    .company-results {
+      text-align: left;
+    }
+
+    .company-results .header {
+      margin-bottom: 15px;
+    }
+
+    .company-results .header h3 {
+      margin: 0 0 10px 0;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .company-results .company-info {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    .company-results .company-info p {
+      margin: 5px 0;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .company-results .best-match {
+      font-weight: bold;
+      color: #0073b1 !important;
+      margin: 10px 0;
+    }
+
+    /* Match type colors with better contrast and rounded corners */
+    .company-results .exact-match {
+      color: #28a745;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .company-results .near-match {
+      color: #007bff;
+      background: #f57c00; 
+      border: 1px solid #0056b3;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .company-results .partial-match {
+      color: #8B4513;
+      background: #ffc107;
+      border: 1px solid #e0a800;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .company-results .no-match {
+      color: #721c24;
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .company-results .near-exact {
+      color: #f57c00; 
+      font-weight: bold;
+    }
+
+    /* Collapsible sections with proper spacing and rounded corners */
+    .company-results .collapsible {
+      margin-top: 10px;
+    }
+
+    .company-results .collapsible details {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #dee2e6;
+    }
+
+    .company-results .collapsible summary {
+      cursor: pointer;
+      font-weight: bold;
+      padding: 8px 12px;
+      color: #0073b1;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+      margin: -12px -12px 0 -12px;
+    }
+
+    .company-results .collapsible summary:hover {
+      background-color: #e9ecef;
+    }
+
+    .company-results .collapsible ul {
+      margin: 10px 0 0 0;
+      padding-left: 20px;
+    }
+
+    .company-results .collapsible li {
+      margin: 3px 0;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="popup">
+    <div class="header">
+      <img src="images/visa_logo.png" alt="Visa Logo" class="logo">
+    </div>
+    <div class="content" id="content">
+      <div class="loading">Loading...</div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "visability-firefox",
+  "version": "1.0.0",
+  "description": "Firefox Add-on that checks job posting sites against a list of companies with UK Sponsor Licences",
+  "main": "manifest.json",
+  "scripts": {
+    "build": "web-ext build",
+    "run": "web-ext run",
+    "lint": "web-ext lint",
+    "sign": "web-ext sign"
+  },
+  "keywords": [
+    "firefox",
+    "addon",
+    "extension",
+    "visa",
+    "sponsor",
+    "uk",
+    "jobs",
+    "linkedin",
+    "charityjob"
+  ],
+  "author": "Visability Team",
+  "license": "MIT",
+  "devDependencies": {
+    "web-ext": "^7.0.0"
+  },
+  "webExt": {
+    "sourceDir": ".",
+    "buildDir": "./web-ext-artifacts"
+  }
+}

@@ -30,9 +30,7 @@ Visa-bility is a Chrome extension that helps users identify UK companies with sp
 ## Data Sources
 
 ### UK Sponsor License Database
-- The extension uses a database of UK companies with sponsor licenses
-- This data is publicly available from UK government sources
-- The database is included with the extension and updated regularly
+- The extension uses a [publicly available list](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers) of UK companies with sponsor licenses, as posted by the UK Visa and Immigration office
 - No external API calls are made to retrieve this data
 
 ## Permissions
@@ -40,9 +38,8 @@ Visa-bility is a Chrome extension that helps users identify UK companies with sp
 The extension requests the following permissions:
 
 - **activeTab**: To access the current tab's content for company name extraction
-- **storage**: For basic extension functionality (not used for data collection)
 - **action**: To display the extension popup
-- **Host permissions**: To access LinkedIn, CharityJob, and Indeed pages
+- **Host permissions**: To run Visa-bility on LinkedIn, CharityJob, and Indeed pages
 
 ## Third-Party Services
 
@@ -71,13 +68,6 @@ If you have any questions about this privacy policy or the extension's data prac
 ## Your Rights
 
 Since we do not collect any personal data, there is no personal information to access, modify, or delete. All processing happens locally in your browser and is not stored anywhere.
-
-## Compliance
-
-This extension complies with:
-- Chrome Web Store policies
-- General Data Protection Regulation (GDPR) principles
-- California Consumer Privacy Act (CCPA) requirements
 
 ## Data Retention
 

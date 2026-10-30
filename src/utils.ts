@@ -4,12 +4,6 @@ type PartialMatch = {
     score: number
 }
 
-type MatchResults = {
-    exactMatches: string[]
-    nearExactMatches: string[]
-    partialMatches: string[]
-}
-
 // Fuzzy search for company matches with weighting
 function searchCompany(companyName: string, companies:string[]): MatchResults {
     // TODO Replace with our API with the companyName instead

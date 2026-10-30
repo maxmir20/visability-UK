@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+npm-debug.log*
+
+# Build output
+dist/
+*.tsbuildinfo
+.vite/
+
+# Packaged extension (the .pem is your private signing key, never commit it)
+*.zip
+*.crx
+*.pem
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+
+# Local notes
+MIGRATION_PLAN.md

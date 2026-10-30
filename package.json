@@ -1,0 +1,25 @@
+{
+  "name": "visability",
+  "version": "1.0.0",
+  "description": "browser extension for checking if company can sponsor in the UK",
+  "homepage": "https://github.com/maxmir20/visability-UK#readme",
+  "bugs": {
+    "url": "https://github.com/maxmir20/visability-UK/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxmir20/visability-UK.git"
+  },
+  "license": "ISC",
+  "author": "Max Ingraham-Rakatansky",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.7",
+    "typescript": "^7.0.2"
+  }
+}

@@ -60,7 +60,6 @@ class CompanyChecker {
   clearBadge(){
     chrome.runtime.sendMessage({
       action: 'updateBadge',
-      color: '',
       text: ''
     });
   }

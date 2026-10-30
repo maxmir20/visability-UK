@@ -11,8 +11,7 @@
   },
   "permissions": [
     "activeTab",
-    "storage",
-    "action"
+    "storage"
   ],
   "host_permissions": [
     "https://www.linkedin.com/*",
@@ -24,11 +23,11 @@
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/*"],
-      "js": ["utils.js", "jobSiteHandler.js", "content.js"]
+      "js": ["dist/utils.js", "jobSiteHandler.js", "content.js"]
     },
     {
       "matches": ["https://*.charityjob.co.uk/*"],
-      "js": ["utils.js", "jobSiteHandler.js", "content.js"]
+      "js": ["dist/utils.js", "jobSiteHandler.js", "content.js"]
     }
   ],
   "background": {

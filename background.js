@@ -9,7 +9,9 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'updateBadge') {
     chrome.action.setBadgeText({ text: request.text });
-    chrome.action.setBadgeBackgroundColor({ color: request.color });
+    if (request.color) {
+      chrome.action.setBadgeBackgroundColor({ color: request.color });
+    }
   }
 });
 
@@ -22,7 +24,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     
     if (!isSupportedSite) {
       chrome.action.setBadgeText({ text: '' });
-      chrome.action.setBadgeBackgroundColor({ color: '' });
     }
   }
 });
@@ -35,13 +36,12 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     }
 
     chrome.action.setBadgeText({ text: '' });
-    chrome.action.setBadgeBackgroundColor({ color: '' });
-    
+
     // Check if the active tab is on a supported job site
     const supportedSites = ['linkedin.com', 'charityjob.co.uk'];
     const isSupportedSite = tab.url ? supportedSites.some(site => tab.url.includes(site)) : false;
     if (isSupportedSite) {
-      chrome.tabs.sendMessage(activeInfo.tabId, { action: 'getCurrentResults' });
+      chrome.tabs.sendMessage(activeInfo.tabId, { action: 'getCurrentResults' }).catch(() => {});
     } 
   });
 });

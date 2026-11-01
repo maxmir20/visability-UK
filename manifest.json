@@ -23,11 +23,11 @@
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/*"],
-      "js": ["dist/utils.js", "jobSiteHandler.js", "content.js"]
+      "js": ["dist/utils.js", "dist/jobSiteHandler.js", "content.js"]
     },
     {
       "matches": ["https://*.charityjob.co.uk/*"],
-      "js": ["dist/utils.js", "jobSiteHandler.js", "content.js"]
+      "js": ["dist/utils.js", "dist/jobSiteHandler.js", "content.js"]
     }
   ],
   "background": {

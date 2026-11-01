@@ -2,7 +2,7 @@
 
 class CompanyChecker {
   companies = [];
-  currentCompany = null;
+  currentCompany = "";
   matchStatus = 'none';
   isInitialized = false;
 
@@ -31,10 +31,10 @@ class CompanyChecker {
     this.showLoadingBadge();
 
     const url = window.location.href;
-    const companyName = window.jobSiteFactory.extractCompanyName(url);
+    const companyName = jobSiteFactory.extractCompanyName(url);
 
     if (!companyName) {
-      this.currentCompany = null;
+      this.currentCompany = "";
       this.matchStatus = 'none';
       // Don't show red badge for no company found, just leave it cleared
       this.clearBadge();
@@ -145,7 +145,7 @@ class CompanyChecker {
             results: results
           });
         } else {
-          sendResponse({ currentCompany: null, results: null });
+          sendResponse({ currentCompany: "", results: null });
         }
       }
     });

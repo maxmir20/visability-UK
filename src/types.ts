@@ -32,3 +32,8 @@ type GetCurrentResults = {
 }
 
 type ActionMessage = UpdateBadge | ClearBadge | GetCurrentResults
+
+type CurrentResultsResponse = {
+    currentCompany: string
+    results: MatchResults | null
+}
